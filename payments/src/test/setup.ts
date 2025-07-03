@@ -5,21 +5,23 @@ import mongoose from "mongoose";
 declare global {
   var signin: (id?: string) => string[];
 }
-jest.mock('../nats-wrapper.ts')
 
+jest.mock('../nats-wrapper.ts');
 
-let mongo: any;
+let mongo: MongoMemoryServer;
+
 beforeAll(async () => {
   process.env.JWT_KEY = "asdfasdf";
 
   mongo = await MongoMemoryServer.create();
-  const mongoUri = mongo.getUri();
-
+  const mongoUri = await mongo.getUri();
+  
   await mongoose.connect(mongoUri, {});
 });
 
 beforeEach(async () => {
   jest.clearAllMocks();
+
   if (mongoose.connection.db) {
     const collections = await mongoose.connection.db.collections();
 
@@ -41,7 +43,7 @@ global.signin = (id?: string) => {
   const payload = {
     id: id || new mongoose.Types.ObjectId().toHexString(),
     email: 'test@test.com'
-  }
+  };
 
   // Create the JWT!
   const token = jwt.sign(payload, process.env.JWT_KEY!);
@@ -57,4 +59,4 @@ global.signin = (id?: string) => {
 
   // return the string thats the cookie with the encoded data
   return [`session=${base64}`];
-}
+};
