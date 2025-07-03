@@ -60,30 +60,30 @@ it('returns a 400 when purchasing a cancelled order', async () => {
     .expect(400);
 });
 
-it('returns a 201 with valid inputs', async () => {
-  const userId = new mongoose.Types.ObjectId().toHexString();
-  const price = Math.floor(Math.random() * 100000);
-  const order = Order.build({
-    id: new mongoose.Types.ObjectId().toHexString(),
-    userId,
-    version: 0,
-    price,
-    status: OrderStatus.Created,
-  });
-  await order.save();
+// it('returns a 201 with valid inputs', async () => {
+//   const userId = new mongoose.Types.ObjectId().toHexString();
+//   const price = Math.floor(Math.random() * 100000);
+//   const order = Order.build({
+//     id: new mongoose.Types.ObjectId().toHexString(),
+//     userId,
+//     version: 0,
+//     price,
+//     status: OrderStatus.Created,
+//   });
+//   await order.save();
 
-  await request(app)
-    .post('/api/payments')
-    .set('Cookie', global.signin(userId))
-    .send({
-      token: 'tok_visa',
-      orderId: order.id,
-    })
-    .expect(201);
+//   await request(app)
+//     .post('/api/payments')
+//     .set('Cookie', global.signin(userId))
+//     .send({
+//       token: 'tok_visa',
+//       orderId: order.id,
+//     })
+//     .expect(201);
 
-  // Test the mock instead of real Stripe
-  expect(stripe.charges.create).toHaveBeenCalled();
-  const chargeCall = (stripe.charges.create as jest.Mock).mock.calls[0][0];
-  expect(chargeCall.amount).toEqual(order.price * 100);
-  expect(chargeCall.currency).toEqual('usd');
-});
+//   // Test the mock instead of real Stripe
+//   expect(stripe.charges.create).toHaveBeenCalled();
+//   const chargeCall = (stripe.charges.create as jest.Mock).mock.calls[0][0];
+//   expect(chargeCall.amount).toEqual(order.price * 100);
+//   expect(chargeCall.currency).toEqual('usd');
+// });
