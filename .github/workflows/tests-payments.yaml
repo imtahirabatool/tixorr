@@ -6,6 +6,31 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - run: cd payments && npm install && npm run test:ci
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: payments
+        run: npm install
+
+      - name: Pre-download MongoDB binary
+        working-directory: payments
+        run: npx mongodb-memory-server --download
+        env:
+          MONGOMS_DOWNLOAD_URL: https://fastdl.mongodb.org
+          MONGOMS_VERSION: 6.0.8
+
+      - name: Run tests
+        working-directory: payments
+        run: npm run test:ci
+        env:
+          JWT_KEY: test_jwt_key
+          MONGOMS_DOWNLOAD_URL: https://fastdl.mongodb.org
+          MONGOMS_VERSION: 6.0.8
