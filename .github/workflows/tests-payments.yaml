@@ -2,31 +2,37 @@ name: tests-payments
 
 on:
   pull_request:
-    paths:
-      - 'payments/**'
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
+    services:
+      mongo:
+        image: mongo:6.0.8
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd="mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
-      - uses: actions/setup-node@v3
+    env:
+      JWT_KEY: "test_jwt_key"
+      MONGO_URI: "mongodb://localhost:27017/test"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node
+        uses: actions/setup-node@v3
         with:
           node-version: 20
 
       - name: Install dependencies
-        run: |
-          export MONGOMS_DISABLE_POSTINSTALL=0
-          export MONGOMS_VERSION=6.0.6
-          export MONGOMS_DOWNLOAD_URL=https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2204-6.0.6.tgz
-          npm install
-        working-directory: payments
+        run: cd payments && npm install
 
       - name: Run tests
-        run: npm run test:ci
-        working-directory: payments
-        env:
-          JWT_KEY: test_jwt_key
-          CI: true
+        run: cd payments && npm run test:ci
