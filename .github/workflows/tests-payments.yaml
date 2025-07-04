@@ -17,9 +17,16 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          export MONGOMS_DISABLE_POSTINSTALL=0
+          export MONGOMS_VERSION=6.0.6
+          export MONGOMS_DOWNLOAD_URL=https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2204-6.0.6.tgz
+          npm install
         working-directory: payments
 
       - name: Run tests
         run: npm run test:ci
         working-directory: payments
+        env:
+          JWT_KEY: test_jwt_key
+          CI: true
