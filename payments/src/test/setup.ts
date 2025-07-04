@@ -18,8 +18,7 @@ beforeAll(async () => {
       version: '6.0.8' // stable versionn
     }
   });
-  const mongoUri = mongo.getUri();
-
+  const mongoUri = process.env.MONGO_URI || (await mongo.getUri());
   await mongoose.connect(mongoUri, {});
 });
 
