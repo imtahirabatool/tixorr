@@ -18,6 +18,7 @@ app.use(
   })
 );
 
+// routes
 app.use(currentUserRouter);
 app.use(signinRouter);
 app.use(signoutRouter);
