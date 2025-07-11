@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: tickets.dev
+    - host: www.tixorr.tech
       http:
         paths:
           - path: /api/payments/?(.*)
