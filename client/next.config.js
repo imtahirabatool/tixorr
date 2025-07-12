@@ -1,12 +1,6 @@
-export default {
-  webpack: (config) => {
-    return {
-      ...config,
-      watchOptions: {
-        ...config.watchOptions,
-        poll: 300
-      }
-    };
+module.export = {
+  webpackDevMiddleware: (config) => {
+    config.watchOptions.poll = 300;
+    return config;
   },
-  allowedDevOrigins: ["tixorr.tech", "www.tixorr.tech"],
 };
