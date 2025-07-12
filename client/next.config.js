@@ -8,5 +8,5 @@ export default {
       }
     };
   },
-  allowedDevOrigins: ['tickets.dev']
+  allowedDevOrigins: ["tixorr.tech", "www.tixorr.tech"],
 };

@@ -5,16 +5,10 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
-  tls:
-    - hosts:
-        - www.tixorr.tech 
-      secretName: tixorr-tech-tls
   rules:
-    - host: www.tixorr.tech
+    - host: tixorr.tech
       http:
         paths:
           - path: /api/payments/?(.*)
@@ -45,6 +39,17 @@ spec:
                 name: orders-svc
                 port:
                   number: 3000
+          - path: /?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: client-src
+                port:
+                  number: 3000
+
+    - host: www.tixorr.tech
+      http:
+        paths:
           - path: /?(.*)
             pathType: ImplementationSpecific
             backend:
